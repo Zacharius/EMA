@@ -3,7 +3,7 @@ package flyingpenguincarcesses.ema;
 /**
  * Created by Zacharius on 11/19/2015.
  */
-abstract class Message {
+public class Message {
 
     private String message;
     private int time;

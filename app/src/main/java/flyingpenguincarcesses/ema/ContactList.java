@@ -19,6 +19,7 @@ public class ContactList extends Activity implements AdapterView.OnItemClickList
 
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,9 +30,20 @@ public class ContactList extends Activity implements AdapterView.OnItemClickList
         contacts = (ListView) findViewById(R.id.contacts);
 
 
-        contactArrayList.add(new Contact("Zach"));
-        contactArrayList.add(new Contact("Steven"));
-        contactArrayList.add(new Contact("Adriana"));
+
+
+
+
+
+        /*contactArrayList.get(0).send("AYY Baby, U Wat Sum Fuk?");
+        contactArrayList.get(0).receive("You're drunk Steven, go to bed");
+        contactArrayList.get(0).send("Awww :(");
+        contactArrayList.get(0).receive("Goodnight Steven");*/
+
+
+
+
+        contactArrayList = Contact.readContacts(getApplicationContext());
 
         for(int i=0; i<contactArrayList.size(); i++)
         {
@@ -50,7 +62,9 @@ public class ContactList extends Activity implements AdapterView.OnItemClickList
         EditText addContact = (EditText) findViewById(R.id.addContact);
         String name = addContact.getText().toString();
 
-        contactArrayList.add(new Contact(name));
+        Contact.writeContact(new Contact(name),getApplicationContext());
+        contactArrayList = Contact.readContacts(getApplicationContext());
+
         names.add(contactArrayList.get(contactArrayList.size() - 1).getName());
 
         addContact.setText("");
