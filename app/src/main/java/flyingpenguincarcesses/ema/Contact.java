@@ -81,7 +81,7 @@ public class Contact {
         return contacts;
 
 
-    }
+    }///
 
 
     public static void writeContact(Contact contact, Context context) {
