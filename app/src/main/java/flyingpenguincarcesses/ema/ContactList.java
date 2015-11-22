@@ -16,7 +16,7 @@ public class ContactList extends Activity implements AdapterView.OnItemClickList
     ListView contacts;
     public static ArrayList<Contact> contactArrayList;
     public static ArrayList<String>  names;
-
+    ArrayAdapter<String> list;
 
 
 
@@ -50,7 +50,7 @@ public class ContactList extends Activity implements AdapterView.OnItemClickList
             names.add(contactArrayList.get(i).getName());
         }
 
-        ArrayAdapter<String> list = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,names );
+        list = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,names );
 
         contacts.setAdapter(list);
         contacts.setOnItemClickListener(this);
@@ -66,6 +66,7 @@ public class ContactList extends Activity implements AdapterView.OnItemClickList
         contactArrayList = Contact.readContacts(getApplicationContext());
 
         names.add(contactArrayList.get(contactArrayList.size() - 1).getName());
+        contacts.setAdapter(list);
 
         addContact.setText("");
     }
