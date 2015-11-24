@@ -60,9 +60,11 @@ public class ContactList extends Activity implements AdapterView.OnItemClickList
 
     public void onAddContact(View v){
         EditText addContact = (EditText) findViewById(R.id.addContact);
+        EditText addNumber = (EditText) findViewById(R.id.number);
         String name = addContact.getText().toString();
+        String number = addNumber.getText().toString();
 
-        Contact.writeContact(new Contact(name),getApplicationContext());
+        Contact.writeContact(new Contact(name, number),getApplicationContext());
         contactArrayList = Contact.readContacts(getApplicationContext());
 
         names.add(contactArrayList.get(contactArrayList.size() - 1).getName());

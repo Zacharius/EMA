@@ -16,6 +16,7 @@ import java.util.ArrayList;
 public class Contact {
 
     private String name;
+    private String phoneNumber;
     private ArrayList<Message> sent;
     private ArrayList<Message> received;
     int history;
@@ -23,9 +24,9 @@ public class Contact {
 
 
 
-
-    public  Contact(String name){
+    public  Contact(String name, String number){
         this.name = name;
+        this.phoneNumber = number;
         sent = new ArrayList<Message>();
         received = new ArrayList<Message>();
         history = 0;
@@ -48,8 +49,11 @@ public class Contact {
             //cycle as long as there is a new contact
             while((inputString = reader.readLine()) != null){
 
+                //read number
+                String number = reader.readLine();
+
                 //make new contact
-                contacts.add(new Contact(inputString));
+                contacts.add(new Contact(inputString, number));
                 Contact contact = contacts.get(index);
 
                 //read number of sent messages
@@ -94,6 +98,10 @@ public class Contact {
 
             //write name
             String buffer = contact.getName() + "\n";
+            fileOut.write(buffer.getBytes());
+
+            //write number
+            buffer = contact.getNumber() + "\n";
             fileOut.write(buffer.getBytes());
 
             //write number of sent messages
@@ -169,6 +177,10 @@ public class Contact {
         }
     }
 
+    public String getNumber(){
+        return this.phoneNumber;
+    }
+
     public int receivedSize(){
         return received.size();
     }
@@ -176,11 +188,5 @@ public class Contact {
     public int sentSize(){
         return sent.size();
     }
-
-
-
-
-
-
 
 }

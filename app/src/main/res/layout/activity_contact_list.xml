@@ -22,7 +22,7 @@
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:id="@+id/addContact"
-        android:hint="Add User Here"/>
+        android:hint="Add Named"/>
 
     <Button
         android:layout_width="wrap_content"
@@ -30,6 +30,21 @@
         android:text="Add Contact"
         android:id="@+id/button"
         android:onClick="onAddContact"/>
+
+    <!--<Button-->
+        <!--android:id="@+id/btnSendSMS"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="Send SMS" />-->
+
+    </TableRow>
+
+    <TableRow>
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Add Number"
+            android:id="@+id/number" />
 
     </TableRow>
 </TableLayout>
