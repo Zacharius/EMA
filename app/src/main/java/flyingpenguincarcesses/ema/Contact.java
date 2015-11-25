@@ -3,7 +3,6 @@ package flyingpenguincarcesses.ema;
 import android.content.Context;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
@@ -20,114 +19,147 @@ public class Contact {
     private ArrayList<Message> sent;
     private ArrayList<Message> received;
     int history;
-    public static final  String CONTACT_FILE = "contact";
+    //public static final  String CONTACT_FILE = "contact";
 
 
-
-    public  Contact(String name, String number){
+    //constructs contact and adds name to contacts file
+    public  Contact(String name, String number, Context context){
         this.name = name;
         this.phoneNumber = number;
         sent = new ArrayList<Message>();
         received = new ArrayList<Message>();
         history = 0;
 
+        FileOutputStream fileOut;
+        String buffer;
+
+        try{
+            fileOut = context.openFileOutput("contacts", Context.MODE_APPEND);
+            buffer = name + "\n";
+            fileOut.write(buffer.getBytes());
+            fileOut.close();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
-    public static ArrayList<Contact> readContacts(Context context) {
-        FileInputStream fileIn;
+    //read the contact file of the contact given by name
+    public static Contact readContact(String name, Context context) {
         BufferedReader reader;
-        ArrayList<Contact> contacts = new ArrayList<Contact>();
-        int index=0;
-
-
+        Contact contact = null;
 
         try{
 
-            reader = new BufferedReader(new InputStreamReader(context.openFileInput(CONTACT_FILE)));
+            reader = new BufferedReader(new InputStreamReader(context.openFileInput(name)));
             String inputString;
 
+
             //cycle as long as there is a new contact
-            while((inputString = reader.readLine()) != null){
+            inputString = reader.readLine();
 
-                //read number
-                String number = reader.readLine();
+            //read number
+            String number = reader.readLine();
 
-                //make new contact
-                contacts.add(new Contact(inputString, number));
-                Contact contact = contacts.get(index);
+            //make new contact
+            contact = new Contact(inputString, number, context);
 
-                //read number of sent messages
-                int sents = Integer.parseInt(reader.readLine());
+            //read number of sent messages
+            int sents = Integer.parseInt(reader.readLine());
 
-                //read sent messages
-                for(int i=0; i<sents; i++){
-                    contact.send(reader.readLine());
-                }
-
-                //read number of received messages
-                int received = Integer.parseInt(reader.readLine());
-
-                //read receved messages
-                for(int i=0; i<received; i++){
-                    contact.send(reader.readLine());
-                }
-
-                //read message history
-                contact.history = Integer.parseInt(reader.readLine());
+            //read sent messages
+            for(int i=0; i<sents; i++){
+                contact.send(reader.readLine());
             }
-            reader.close();
 
+            //read number of received messages
+            int received = Integer.parseInt(reader.readLine());
+
+            //read receved messages
+            for(int i=0; i<received; i++){
+                contact.send(reader.readLine());
+            }
+
+            //read message history
+            contact.history = Integer.parseInt(reader.readLine());
+            reader.close();
         }catch(Exception e) {
             e.printStackTrace();
         }
 
 
-        return contacts;
+        return contact;
 
 
-    }///
+    }
+
+    //read all contacts found in contact file
+    public static ArrayList<Contact> readContacts(Context context){
+        FileInputStream fileIn;
+        BufferedReader reader;
+        ArrayList<Contact> contacts = new ArrayList<Contact>();
+        ArrayList<String> names = new ArrayList<String>();
+        String name;
+
+        try{
+            reader = new BufferedReader(new InputStreamReader(context.openFileInput("contacts")));
+
+            while ((name = reader.readLine()) != null){
+                names.add(name);
+            }
+
+            for(int i=0; i<names.size(); i++){
+                contacts.add(Contact.readContact(names.get(i), context));
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
+        return  contacts;
+
+    }
 
 
-    public static void writeContact(Contact contact, Context context) {
+    public  void writeContact(Context context) {
         FileOutputStream fileOut;
-        BufferedWriter writer;
 
 
         try {
-            fileOut = context.openFileOutput(CONTACT_FILE, Context.MODE_APPEND);
+            fileOut = context.openFileOutput(this.getName(), Context.MODE_PRIVATE);
 
             //write name
-            String buffer = contact.getName() + "\n";
+            String buffer = this.getName() + "\n";
             fileOut.write(buffer.getBytes());
 
             //write number
-            buffer = contact.getNumber() + "\n";
+            buffer = this.getNumber() + "\n";
             fileOut.write(buffer.getBytes());
 
             //write number of sent messages
-            buffer = contact.sent.size() + "\n";
+            buffer = this.sent.size() + "\n";
             fileOut.write(buffer.getBytes());
 
             //write sent messages
-            for(int i=0; i<contact.sent.size(); i++)
+            for(int i=0; i<this.sent.size(); i++)
             {
-                buffer = contact.sent.get(i) + "\n";
+                buffer = this.sent.get(i) + "\n";
                 fileOut.write(buffer.getBytes());
             }
 
             //write number of received messages
-            buffer = contact.received.size() + "\n";
+            buffer = this.received.size() + "\n";
             fileOut.write(buffer.getBytes());
 
             //write received messages
-            for(int i=0; i<contact.received.size(); i++)
+            for(int i=0; i<this.received.size(); i++)
             {
-                buffer = contact.received.get(i) + "\n";
+                buffer = this.received.get(i) + "\n";
                 fileOut.write(buffer.getBytes());
             }
 
             //write message history
-            buffer = contact.history + "\n";
+            buffer = this.history + "\n";
             fileOut.write(buffer.getBytes());
 
             fileOut.close();
@@ -139,6 +171,8 @@ public class Contact {
 
 
     }
+
+
 
     public void send(String message){
         sent.add(new Message(message));

@@ -30,19 +30,6 @@ public class ContactList extends Activity implements AdapterView.OnItemClickList
         contacts = (ListView) findViewById(R.id.contacts);
 
 
-
-
-
-
-
-        /*contactArrayList.get(0).send("AYY Baby, U Wat Sum Fuk?");
-        contactArrayList.get(0).receive("You're drunk Steven, go to bed");
-        contactArrayList.get(0).send("Awww :(");
-        contactArrayList.get(0).receive("Goodnight Steven");*/
-
-
-
-
         contactArrayList = Contact.readContacts(getApplicationContext());
 
         for(int i=0; i<contactArrayList.size(); i++)
@@ -64,8 +51,9 @@ public class ContactList extends Activity implements AdapterView.OnItemClickList
         String name = addContact.getText().toString();
         String number = addNumber.getText().toString();
 
-        Contact.writeContact(new Contact(name, number),getApplicationContext());
-        contactArrayList = Contact.readContacts(getApplicationContext());
+        Contact contact = new Contact(name, number, getApplicationContext());
+        contact.writeContact(getApplicationContext());
+        contactArrayList.add(contact);
 
         names.add(contactArrayList.get(contactArrayList.size() - 1).getName());
         contacts.setAdapter(list);
