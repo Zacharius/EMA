@@ -8,6 +8,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.EditText;
 
+import java.util.AbstractList;
 import java.util.ArrayList;
 
 import android.app.Activity;
@@ -18,6 +19,16 @@ import android.telephony.SmsManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import android.content.*;
+import java.util.Date;
+import java.text.SimpleDateFormat;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.view.View;
+
 
 /**
  * Created by adrianapadilla on 11/22/15.
@@ -102,6 +113,26 @@ public class ContactDetails extends Activity {
 
         message.setText("");
     }
+
+    public void refreshSmsInbox() {
+        ContentResolver contentResolver = getContentResolver();
+        Cursor smsInboxCursor = contentResolver.query(Uri.parse("content://sms/inbox"), null, null, null, null);
+        int indexBody = smsInboxCursor.getColumnIndex("body");
+        int indexAddress = smsInboxCursor.getColumnIndex("address");
+        long timeMillis = smsInboxCursor.getColumnIndex("date");
+        Date date = new Date(timeMillis);
+        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy");
+        String dateText = format.format(date);
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, messages);
+        if (indexBody < 0 || !smsInboxCursor.moveToFirst()) return;
+        arrayAdapter.clear();
+        do {
+            String str = smsInboxCursor.getString(indexAddress) +" at "+
+                    "\n" + smsInboxCursor.getString(indexBody) +dateText+ "\n";
+            arrayAdapter.add(str);
+        } while (smsInboxCursor.moveToNext());
+    }
+
 //    @Override
 //    public void onMessageReceived(MessageEvent messageEvent){
 //        if(messageEvent.getPath().equals(VOICE_TRANSCRIPTION_MESSAGE_PATH)){

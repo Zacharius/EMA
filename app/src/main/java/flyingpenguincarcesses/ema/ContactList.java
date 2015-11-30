@@ -31,10 +31,6 @@ public class ContactList extends Activity implements AdapterView.OnItemClickList
 
 
 
-
-
-
-
         /*contactArrayList.get(0).send("AYY Baby, U Wat Sum Fuk?");
         contactArrayList.get(0).receive("You're drunk Steven, go to bed");
         contactArrayList.get(0).send("Awww :(");
