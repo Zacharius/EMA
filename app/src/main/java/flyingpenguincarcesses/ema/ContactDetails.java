@@ -2,22 +2,16 @@ package flyingpenguincarcesses.ema;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.provider.Telephony;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.EditText;
-
-import java.util.ArrayList;
-
-import android.app.Activity;
-import android.os.Bundle;
-import android.app.PendingIntent;
-import android.content.Intent;
 import android.telephony.SmsManager;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
 
 /**
  * Created by adrianapadilla on 11/22/15.
@@ -27,7 +21,7 @@ public class ContactDetails extends Activity {
     TextView name;
     ListView mess;
     public static final String msg ="msg";
-    ArrayList<String> messages;
+    ArrayList<String> messages = new ArrayList<String>();
     ArrayAdapter<String> messAdapter;
     int contactIndex;
     String buffer;
@@ -40,7 +34,7 @@ public class ContactDetails extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_details);
 
-        messages = new ArrayList<String>();
+
 
         contactIndex = getIntent().getIntExtra(msg, -1);
         contact = ContactList.contactArrayList.get(contactIndex);
@@ -57,24 +51,34 @@ public class ContactDetails extends Activity {
 //            }
 //        });
 
-        int i = 0;
-        while (i < contact.receivedSize() || i < contact.sentSize()) {
-
-            if (contact.getSent(i) != null) {
-                buffer = "You: " + contact.getSent(i).getMessage();
-                messages.add(buffer);
+        int reicevedSize = contact.receivedSize();
+        int sentSize = contact.sentSize();
+        int r = 0;
+        int s = 0;
+        while((s<sentSize) || (r<reicevedSize)){
+            if(contact.getReceived(r) == null)
+            {
+                messages.add("You: " + contact.getSent(s++).getMessage());
+                continue;
             }
 
-            if (contact.getReceived(i) != null) {
-                buffer = contact.getName() + ": " + contact.getReceived(i).getMessage();
-                messages.add(buffer);
+            if(contact.getSent(s) == null){
+                messages.add(contact.getName() + ": " +  contact.getReceived(r++).getMessage());
+                continue;
             }
 
-            i++;
 
+            if(contact.getSent(s).getTime() > contact.getReceived(r).getTime()){
+                messages.add("you: " + contact.getSent(s++).getMessage());
+            }
+
+            if(contact.getReceived(r).getTime() > contact.getSent(s).getTime()){
+                messages.add(contact.getName() +  ": " + contact.getReceived(r++ ).getMessage());
+            }
         }
 
-        ArrayAdapter<String> messAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, messages);
+
+        messAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, messages);
 
         mess = (ListView) findViewById(R.id.mess);
         mess.setAdapter(messAdapter);
@@ -95,10 +99,15 @@ public class ContactDetails extends Activity {
     public void onSendSMS(View v){
         EditText message = (EditText) findViewById(R.id.sendSMS);
         buffer = message.getText().toString();
+
         contact.send(buffer);
+        contact.writeContact(getApplicationContext());
+
         messages.add("you: " + buffer);
-        sendSMS(contact.getNumber(), buffer);
         mess.setAdapter(messAdapter);
+
+        sendSMS(contact.getNumber(), buffer);
+
 
         message.setText("");
     }
