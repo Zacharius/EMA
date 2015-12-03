@@ -2,11 +2,14 @@ package flyingpenguincarcesses.ema;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.provider.Telephony;
+import android.telephony.SmsManager;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.AbstractList;
 import java.util.ArrayList;
@@ -38,7 +41,7 @@ public class ContactDetails extends Activity {
     TextView name;
     ListView mess;
     public static final String msg ="msg";
-    ArrayList<String> messages;
+    ArrayList<String> messages = new ArrayList<String>();
     ArrayAdapter<String> messAdapter;
     int contactIndex;
     String buffer;
@@ -51,7 +54,6 @@ public class ContactDetails extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_details);
 
-        messages = new ArrayList<String>();
 
         contactIndex = getIntent().getIntExtra(msg, -1);
         contact = ContactList.contactArrayList.get(contactIndex);
@@ -68,24 +70,35 @@ public class ContactDetails extends Activity {
 //            }
 //        });
 
-        int i = 0;
-        while (i < contact.receivedSize() || i < contact.sentSize()) {
-
-            if (contact.getSent(i) != null) {
-                buffer = "You: " + contact.getSent(i).getMessage();
-                messages.add(buffer);
+        int reicevedSize = contact.receivedSize();
+        int sentSize = contact.sentSize();
+        int r = 0;
+        int s = 0;
+        while((s<sentSize) || (r<reicevedSize)){
+            if(contact.getReceived(r) == null)
+            {
+                messages.add("You: " + contact.getSent(s++).getMessage());
+                continue;
             }
 
-            if (contact.getReceived(i) != null) {
-                buffer = contact.getName() + ": " + contact.getReceived(i).getMessage();
-                messages.add(buffer);
+            if(contact.getSent(s) == null){
+                messages.add(contact.getName() + ": " +  contact.getReceived(r++).getMessage());
+                continue;
             }
 
-            i++;
 
+            if(contact.getSent(s).getTime() > contact.getReceived(r).getTime()){
+                messages.add("you: " + contact.getSent(s++).getMessage());
+            }
+
+            if(contact.getReceived(r).getTime() > contact.getSent(s).getTime()){
+                messages.add(contact.getName() +  ": " + contact.getReceived(r++ ).getMessage());
+            }
         }
 
         ArrayAdapter<String> messAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, messages);
+
+        messAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, messages);
 
         mess = (ListView) findViewById(R.id.mess);
         mess.setAdapter(messAdapter);
@@ -106,33 +119,18 @@ public class ContactDetails extends Activity {
     public void onSendSMS(View v){
         EditText message = (EditText) findViewById(R.id.sendSMS);
         buffer = message.getText().toString();
+
         contact.send(buffer);
+        contact.writeContact(getApplicationContext());
+
         messages.add("you: " + buffer);
-        sendSMS(contact.getNumber(), buffer);
         mess.setAdapter(messAdapter);
+
+        sendSMS(contact.getNumber(), buffer);
+
 
         message.setText("");
     }
-
-    public void refreshSmsInbox() {
-        ContentResolver contentResolver = getContentResolver();
-        Cursor smsInboxCursor = contentResolver.query(Uri.parse("content://sms/inbox"), null, null, null, null);
-        int indexBody = smsInboxCursor.getColumnIndex("body");
-        int indexAddress = smsInboxCursor.getColumnIndex("address");
-        long timeMillis = smsInboxCursor.getColumnIndex("date");
-        Date date = new Date(timeMillis);
-        SimpleDateFormat format = new SimpleDateFormat("dd/MM/yy");
-        String dateText = format.format(date);
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, messages);
-        if (indexBody < 0 || !smsInboxCursor.moveToFirst()) return;
-        arrayAdapter.clear();
-        do {
-            String str = smsInboxCursor.getString(indexAddress) +" at "+
-                    "\n" + smsInboxCursor.getString(indexBody) +dateText+ "\n";
-            arrayAdapter.add(str);
-        } while (smsInboxCursor.moveToNext());
-    }
-
 //    @Override
 //    public void onMessageReceived(MessageEvent messageEvent){
 //        if(messageEvent.getPath().equals(VOICE_TRANSCRIPTION_MESSAGE_PATH)){

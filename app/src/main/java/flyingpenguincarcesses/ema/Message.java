@@ -6,17 +6,23 @@ package flyingpenguincarcesses.ema;
 public class Message {
 
     private String message;
-    private int time;
+    private long time;
 
     public Message(String message){
+        time = System.currentTimeMillis();
         this.message = message;
+    }
+
+    public Message(String message, long time){
+        this.message = message;
+        this.time = time;
     }
 
     public String getMessage(){
         return message;
     }
 
-    public int getTime(){
+    public long getTime(){
         return time;
     }
 
