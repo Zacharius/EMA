@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">EMA</string>
+    <string name="Splash">Encrypted Messenger Application</string>
 </resources>
