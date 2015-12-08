@@ -36,7 +36,7 @@ public class SplashScreen extends Activity {
                     e.printStackTrace();
                 }finally{
 
-                    Intent intent = new Intent(SplashScreen.this,ContactList.class); //next screen is ContactList
+                    Intent intent = new Intent(SplashScreen.this,ContactList.class); //next screen is flyingpenguincarcesses.ema.ContactList.ContactList
                     //AndroidManifest.xml uses the intent filter .LAUNCHER -- needs to work without it.
                     startActivity(intent); //The Splash Screen is considered a short activity.
                 }
