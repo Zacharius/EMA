@@ -41,13 +41,12 @@
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="Received Text password: "/>
+            android:text="Key1: "/>
 
         <EditText
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:id="@+id/ReceivedPass"
-            android:hint="how received texts will be decrypted"/>
+            android:id="@+id/ReceivedPass" />
 
     </TableRow>
 
@@ -57,13 +56,12 @@
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="Received Text password: "/>
+            android:text="Key2: "/>
 
         <EditText
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:id="@+id/SentPass"
-            android:hint="how sent texts will be encrypted"/>
+            android:id="@+id/SentPass" />
 
     </TableRow>
 
