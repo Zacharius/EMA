@@ -2,7 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="flyingpenguincarcesses.ema" >
 
-    <uses-permission android:name="android.permission.SEND_SMS"/>
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
 
     <application
         android:allowBackup="true"
@@ -20,12 +21,29 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ContactList" >
+
+        <receiver
+            android:name=".SMSReciever"
+            android:permission="android.permission.BROADCAST_SMS" >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
+            </intent-filter>
+        </receiver>
+
+
+        <activity android:name=".ContactList">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ContactDetails" >
+
+        <activity
+            android:name=".ContactDetails"
+            android:windowSoftInputMode="adjustPan">
+        </activity>
+        <activity
+            android:name=".addContact"
+            android:screenOrientation="landscape">
         </activity>
     </application>
 

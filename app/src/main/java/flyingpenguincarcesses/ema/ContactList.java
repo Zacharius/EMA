@@ -6,12 +6,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 
-public class ContactList extends Activity implements AdapterView.OnItemClickListener {
+public class  ContactList extends Activity implements AdapterView.OnItemClickListener {
 
     ListView contacts;
     public static ArrayList<Contact> contactArrayList;
@@ -46,19 +45,8 @@ public class ContactList extends Activity implements AdapterView.OnItemClickList
     }
 
     public void onAddContact(View v){
-        EditText addContact = (EditText) findViewById(R.id.addContact);
-        EditText addNumber = (EditText) findViewById(R.id.number);
-        String name = addContact.getText().toString();
-        String number = addNumber.getText().toString();
-
-        Contact contact = new Contact(name, number, getApplicationContext());
-        contact.writeContact(getApplicationContext());
-        contactArrayList.add(contact);
-
-        names.add(contactArrayList.get(contactArrayList.size() - 1).getName());
-        contacts.setAdapter(list);
-
-        addContact.setText("");
+        Intent i = new Intent(v.getContext(), addContact.class);
+        startActivity(i);
     }
 
     public void onItemClick(AdapterView<?> parent,View v, int position, long id){
@@ -66,6 +54,5 @@ public class ContactList extends Activity implements AdapterView.OnItemClickList
         i.putExtra(ContactDetails.msg,position);
 
         startActivity(i);
-
     }
 }

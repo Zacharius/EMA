@@ -11,26 +11,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.AbstractList;
 import java.util.ArrayList;
-
-import android.app.Activity;
-import android.os.Bundle;
-import android.app.PendingIntent;
-import android.content.Intent;
-import android.telephony.SmsManager;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
-
-import android.content.*;
-import java.util.Date;
-import java.text.SimpleDateFormat;
-import android.database.Cursor;
-import android.net.Uri;
-import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
-import android.view.View;
 
 
 /**
@@ -39,14 +20,15 @@ import android.view.View;
 
 public class ContactDetails extends Activity {
     TextView name;
-    ListView mess;
+    static ListView mess;
     public static final String msg ="msg";
-    ArrayList<String> messages = new ArrayList<String>();
-    ArrayAdapter<String> messAdapter;
+    static ArrayList<String> messages;
+    static ArrayAdapter<String> messAdapter;
     int contactIndex;
     String buffer;
     Contact contact;
     Button smsbutton;
+    TextView number;
     //EditText messageBody = (EditText) findViewById(R.id.sendSMS);
 
     @Override
@@ -54,31 +36,42 @@ public class ContactDetails extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_details);
 
+        messages = new ArrayList<String>();
 
         contactIndex = getIntent().getIntExtra(msg, -1);
-        contact = ContactList.contactArrayList.get(contactIndex);
+        contact = Contact.readContact(ContactList.contactArrayList.get(contactIndex).getName(), getApplicationContext());
 
 
         name = (TextView) findViewById(R.id.name);
         name.setText(contact.getName());
 
-        smsbutton = (Button) findViewById(R.id.smsbutton);
-//        smsbutton.setOnClickListener(new View.OnClickListener()
-//        {
-//            public void onClick(View v){
-//                sendSMS("2103812814", messageBody.getText().toString());
-//            }
-//        });
+        number = (TextView) findViewById(R.id.number);
+        number.setText(contact.getNumber());
 
-        int reicevedSize = contact.receivedSize();
-        int sentSize = contact.sentSize();
+        smsbutton = (Button) findViewById(R.id.smsbutton);
+
+
+        /*
+        for(int i=0; i<contact.sentSize(); i++)
+        {
+            messages.add(contact.getSent(i).getMessage());
+        }
+
+        for(int i=0; i<contact.receivedSize(); i++)
+        {
+            messages.add(contact.getReceived(i).getMessage());
+        }*/
+        int recieved = contact.receivedSize();
+        int sent = contact.sentSize();
+
         int r = 0;
         int s = 0;
-        while((s<sentSize) || (r<reicevedSize)){
+        while((contact.getReceived(r) != null)  || (contact.getSent(s) != null)){
             if(contact.getReceived(r) == null)
             {
-                messages.add("You: " + contact.getSent(s++).getMessage());
+                messages.add( "you: " + contact.getSent(s++).getMessage());
                 continue;
+
             }
 
             if(contact.getSent(s) == null){
@@ -87,21 +80,21 @@ public class ContactDetails extends Activity {
             }
 
 
-            if(contact.getSent(s).getTime() > contact.getReceived(r).getTime()){
+            if(contact.getSent(s).getTime() <= contact.getReceived(r).getTime()){
                 messages.add("you: " + contact.getSent(s++).getMessage());
+                continue;
             }
 
-            if(contact.getReceived(r).getTime() > contact.getSent(s).getTime()){
-                messages.add(contact.getName() +  ": " + contact.getReceived(r++ ).getMessage());
+            if(contact.getReceived(r).getTime() <= contact.getSent(s).getTime()){
+                messages.add(contact.getName() +  ": " + contact.getReceived(r++).getMessage());
             }
         }
-
-        ArrayAdapter<String> messAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, messages);
 
         messAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, messages);
 
         mess = (ListView) findViewById(R.id.mess);
         mess.setAdapter(messAdapter);
+        mess.setSelection(messages.size()-1);
     }
 
     public void sendSMS(String phoneNumber, String message)
@@ -120,24 +113,21 @@ public class ContactDetails extends Activity {
         EditText message = (EditText) findViewById(R.id.sendSMS);
         buffer = message.getText().toString();
 
-        contact.send(buffer);
-        contact.writeContact(getApplicationContext());
+        if(!buffer.equals("")){
+            contact.send(buffer);
+            contact.writeContact(getApplicationContext());
 
-        messages.add("you: " + buffer);
-        mess.setAdapter(messAdapter);
+            messages.add("you: " + buffer);
+            mess.setAdapter(messAdapter);
+            mess.setSelection(messages.size() - 1);
 
-        sendSMS(contact.getNumber(), buffer);
+            String send = Message.encrypt(buffer, contact.getKey1(), contact.getKey2());
 
+
+            sendSMS(contact.getNumber(), send);
+        }
 
         message.setText("");
     }
-//    @Override
-//    public void onMessageReceived(MessageEvent messageEvent){
-//        if(messageEvent.getPath().equals(VOICE_TRANSCRIPTION_MESSAGE_PATH)){
-//            Intent startIntent = new Intent(this, MainActivity.class);
-//            startIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//            startIntent.putExtra("VOICE_DATA", messageEvent.getData());
-//            startActivity(startIntent);
-//        }
-//    }
+
 }

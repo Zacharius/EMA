@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TableLayout
+    tools:context="flyingpenguincarcesses.ema.addContact"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <TableRow>
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="Contact Name: "/>
+
+        <EditText
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@+id/contactName"/>
+
+    </TableRow>
+
+    <TableRow>
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="Phone Number: "/>
+
+        <EditText
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@+id/contactNumber"/>
+
+    </TableRow>
+
+
+    <TableRow>
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="Received Text password: "/>
+
+        <EditText
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@+id/ReceivedPass"
+            android:hint="how received texts will be decrypted"/>
+
+    </TableRow>
+
+
+    <TableRow>
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="Received Text password: "/>
+
+        <EditText
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@+id/SentPass"
+            android:hint="how sent texts will be encrypted"/>
+
+    </TableRow>
+
+
+    <TableRow>
+
+        <Button
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="Add Contact"
+            android:onClick="onAddContact"/>
+
+    </TableRow>
+
+</TableLayout>

@@ -1,50 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:stretchColumns="1"
+    android:orientation="vertical"
     tools:context=".ContactList">
 
-    <TableRow>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Contacts"
+        android:onClick="onAddContact"/>
 
     <ListView
         android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:id="@+id/contacts"
-        android:layout_span="2"/>
-
-    </TableRow>
-
-    <TableRow>
-
-    <EditText
-        android:layout_width="250dp"
         android:layout_height="wrap_content"
-        android:id="@+id/addContact"
-        android:hint="Add Named"/>
+        android:id="@+id/contacts"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Add Contact"
-        android:id="@+id/button"
-        android:onClick="onAddContact"/>
 
-    <!--<Button-->
-        <!--android:id="@+id/btnSendSMS"-->
-        <!--android:layout_width="fill_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="Send SMS" />-->
 
-    </TableRow>
-
-    <TableRow>
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="Add Number"
-            android:id="@+id/number" />
-
-    </TableRow>
-</TableLayout>
+</LinearLayout>

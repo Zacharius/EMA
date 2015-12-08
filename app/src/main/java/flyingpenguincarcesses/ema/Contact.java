@@ -16,16 +16,21 @@ public class Contact {
 
     private String name;
     private String phoneNumber;
+    private String key1;
+    private String key2;
     private ArrayList<Message> sent;
     private ArrayList<Message> received;
+
     int history;
     //public static final  String CONTACT_FILE = "contact";
 
 
     //constructs contact and adds name to contacts file
-    public  Contact(String name, String number, Context context){
+    public  Contact(String name, String number,String key1, String key2, Context context){
         this.name = name;
         this.phoneNumber = number;
+        this.key1 = key1;
+        this.key2 = key2;
         sent = new ArrayList<Message>();
         received = new ArrayList<Message>();
         history = 0;
@@ -38,10 +43,23 @@ public class Contact {
             buffer = name + "\n";
             fileOut.write(buffer.getBytes());
             fileOut.close();
+            this.writeContact(context);
 
         }catch (Exception e){
             e.printStackTrace();
         }
+
+    }
+
+    //constructs contact, but dosen't add name to contacts file
+    public  Contact(String name, String number,String key1, String key2) {
+        this.name = name;
+        this.phoneNumber = number;
+        this.key1 = key1;
+        this.key2 = key2;
+        sent = new ArrayList<Message>();
+        received = new ArrayList<Message>();
+        history = 0;
 
     }
 
@@ -53,17 +71,21 @@ public class Contact {
         try{
 
             reader = new BufferedReader(new InputStreamReader(context.openFileInput(name)));
-            String inputString;
 
-
-            //cycle as long as there is a new contact
-            inputString = reader.readLine();
+            //read name
+            String ContactName = reader.readLine();
 
             //read number
             String number = reader.readLine();
 
+            //read key1
+            String key1 = reader.readLine();
+
+            //read key2
+            String key2 = reader.readLine();
+
             //make new contact
-            contact = new Contact(inputString, number, context);
+            contact = new Contact(ContactName, number, key1, key2);
 
             //read number of sent messages
             int sents = Integer.parseInt(reader.readLine());
@@ -78,7 +100,7 @@ public class Contact {
 
             //read receved messages
             for(int i=0; i<received; i++){
-                contact.send(reader.readLine());
+                contact.receive(reader.readLine());
             }
 
             //read message history
@@ -108,9 +130,11 @@ public class Contact {
             while ((name = reader.readLine()) != null){
                 names.add(name);
             }
-
+            //context.deleteFile("contacts");
             for(int i=0; i<names.size(); i++){
                 contacts.add(Contact.readContact(names.get(i), context));
+                //context.deleteFile(names.get(i));
+
             }
         }catch(Exception e){
             e.printStackTrace();
@@ -136,6 +160,14 @@ public class Contact {
             buffer = this.getNumber() + "\n";
             fileOut.write(buffer.getBytes());
 
+            //write key1
+            buffer = this.key1 + "\n";
+            fileOut.write(buffer.getBytes());
+
+            //write key2
+            buffer = this.key2 + "\n";
+            fileOut.write(buffer.getBytes());
+
             //write number of sent messages
             buffer = this.sent.size() + "\n";
             fileOut.write(buffer.getBytes());
@@ -143,7 +175,7 @@ public class Contact {
             //write sent messages
             for(int i=0; i<this.sent.size(); i++)
             {
-                buffer = this.sent.get(i) + "\n";
+                buffer = this.sent.get(i).getMessage() + "\n";
                 fileOut.write(buffer.getBytes());
             }
 
@@ -154,7 +186,7 @@ public class Contact {
             //write received messages
             for(int i=0; i<this.received.size(); i++)
             {
-                buffer = this.received.get(i) + "\n";
+                buffer = this.received.get(i).getMessage() + "\n";
                 fileOut.write(buffer.getBytes());
             }
 
@@ -221,6 +253,11 @@ public class Contact {
 
     public int sentSize(){
         return sent.size();
+    }
+
+    public String getKey1(){ return key1; }
+
+    public String getKey2(){return  key2;
     }
 
 }
